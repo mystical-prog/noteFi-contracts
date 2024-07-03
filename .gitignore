@@ -1,0 +1,20 @@
+# Compiler files
+cache/
+out/
+zkout/
+node_modules/
+broadcast/
+
+# Ignores development broadcast logs
+!/broadcast
+/broadcast/**/7701/
+/broadcast/**/dry-run/
+/script/price_update.txt
+
+# Docs
+docs/
+
+# Dotenv file
+.env
+
+args.txt
