@@ -35,17 +35,17 @@ contract Offer {
 
     function buy() external isAuthorized isExecutable {
         require(msg.sender != seller, "The seller should call the cancel function instead");
+        executed = true;
         require(premiumToken.transferFrom(msg.sender, seller, ask), "Ask transfer failed");
         optionContract.transfer(msg.sender);
-        executed = true;
 
         emit OfferBought(address(optionContract), ask, msg.sender, seller);
     }
 
     function cancel() external isAuthorized isExecutable {
         require(msg.sender == seller, "Only the seller can call this function!");
-        optionContract.transfer(seller);
         executed = true;
+        optionContract.transfer(seller);
 
         emit OfferCancelled(address(optionContract), ask);
     }

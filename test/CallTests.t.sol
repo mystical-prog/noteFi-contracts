@@ -29,7 +29,7 @@ contract CallOptionTest is Test {
         factory.createCallOption(ethToken, premium, strikePrice, quantity, expiration);
 
         address[] memory callOptions = factory.getCallOptions();
-        callOption = CallOption(callOptions[0]);
+        callOption = CallOption(callOptions[callOptions.length-1]);
     }
 
     function testBuyAndExecute() public {
@@ -141,7 +141,7 @@ contract CallOptionTest is Test {
         factory.createCallOption(ethToken, _premium, _strikePrice, _quantity, _expiration);
 
         address[] memory _callOptions = factory.getCallOptions();
-        CallOption callOption2 = CallOption(_callOptions[1]);
+        CallOption callOption2 = CallOption(_callOptions[_callOptions.length-1]);
 
         assertEq(callOption2.inited(), false);
 
