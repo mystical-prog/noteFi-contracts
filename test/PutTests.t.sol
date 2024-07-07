@@ -29,7 +29,7 @@ contract PutOptionTest is Test {
         factory.createPutOption(ethToken, premium, strikePrice, quantity, expiration);
 
         address[] memory putOptions = factory.getPutOptions();
-        putOption = PutOption(putOptions[0]);
+        putOption = PutOption(putOptions[putOptions.length-1]);
     }
 
     function testBuyAndExecute() public {
@@ -148,7 +148,7 @@ contract PutOptionTest is Test {
         factory.createPutOption(ethToken, _premium, _strikePrice, _quantity, _expiration);
 
         address[] memory _putOptions = factory.getPutOptions();
-        PutOption putOption2 = PutOption(_putOptions[1]);
+        PutOption putOption2 = PutOption(_putOptions[_putOptions.length-1]);
 
         assertEq(putOption2.inited(), false);
         assertEq(putOption2.strikeValue(), 30e18);

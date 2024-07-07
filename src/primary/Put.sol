@@ -74,15 +74,15 @@ contract PutOption {
 
     function init() external onlyCreator {
         require(inited == false, "Option contract has already been initialized");
-        require(premiumToken.transferFrom(creator, address(this), strikeValue()), "Transfer failed");
         inited = true;
+        require(premiumToken.transferFrom(creator, address(this), strikeValue()), "Transfer failed");
     }
 
     function buy() external notBought isInited notExpired {
         require(msg.sender != creator, "Creator cannot buy their own option");
-        require(premiumToken.transferFrom(msg.sender, creator, premium), "Premium transfer failed");
-        buyer = msg.sender;
         bought = true;
+        buyer = msg.sender;
+        require(premiumToken.transferFrom(msg.sender, creator, premium), "Premium transfer failed");
     }
 
     function transfer(address newBuyer) external onlyBuyer isInited notExpired {
@@ -91,12 +91,10 @@ contract PutOption {
 
     function execute() external onlyBuyer notExecuted isInited notExpired {
         require(_checkPosition(), "Option is out of the money");
-
+        executed = true;
         uint256 amountToTransfer = strikeValue();
         require(premiumToken.transfer(buyer, amountToTransfer), "Asset transfer failed");
         require(IERC20(asset).transferFrom(buyer, creator, quantity), "Payment failed");
-
-        executed = true;
     }
 
     function _checkPosition() internal view returns (bool) {
@@ -106,16 +104,15 @@ contract PutOption {
     }
 
     function cancel() external onlyCreator notBought isInited notExpired {
-        require(premiumToken.transfer(creator, strikeValue()), "Asset transfer failed");
         executed = true;
+        require(premiumToken.transfer(creator, strikeValue()), "Asset transfer failed");
     }
 
     function withdraw() external onlyCreator isInited {
         require(block.timestamp > expiration, "Option not expired yet");
         require(!executed, "Option already executed");
-
-        require(premiumToken.transfer(creator, strikeValue()), "Asset transfer failed");
         executed = true;
+        require(premiumToken.transfer(creator, strikeValue()), "Asset transfer failed");
     }
 
     function adjustPremium(uint256 newPremium) external onlyCreator notBought notExpired {

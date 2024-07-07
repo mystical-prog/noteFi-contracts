@@ -9,7 +9,7 @@ broadcast/
 !/broadcast
 /broadcast/**/7701/
 /broadcast/**/dry-run/
-/script/price_update.txt
+price_update.txt
 
 # Docs
 docs/

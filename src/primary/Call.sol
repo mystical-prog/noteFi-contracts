@@ -74,15 +74,15 @@ contract CallOption {
 
     function init() external onlyCreator {
         require(inited == false, "Option contract has already been initialized");
-        require(IERC20(asset).transferFrom(creator, address(this), quantity), "Transfer failed");
         inited = true;
+        require(IERC20(asset).transferFrom(creator, address(this), quantity), "Transfer failed");
     }
 
     function buy() external notBought isInited notExpired {
         require(msg.sender != creator, "Creator cannot buy their own option");
-        require(premiumToken.transferFrom(msg.sender, creator, premium), "Premium transfer failed");
-        buyer = msg.sender;
         bought = true;
+        buyer = msg.sender;
+        require(premiumToken.transferFrom(msg.sender, creator, premium), "Premium transfer failed");
     }
 
     function transfer(address newBuyer) external onlyBuyer isInited notExpired {
@@ -91,12 +91,10 @@ contract CallOption {
 
     function execute() external onlyBuyer notExecuted isInited notExpired {
         require(_checkPosition(), "Option is out of the money");
-
+        executed = true;
         uint256 amountToPay = strikeValue();
         require(premiumToken.transferFrom(buyer, creator, amountToPay), "Payment failed");
         require(IERC20(asset).transfer(buyer, quantity), "Asset transfer failed");
-
-        executed = true;
     }
 
     function _checkPosition() internal view returns (bool) {
@@ -106,16 +104,15 @@ contract CallOption {
     }
 
     function cancel() external onlyCreator notBought isInited notExpired {
-        require(IERC20(asset).transfer(creator, quantity), "Asset transfer failed");
         executed = true;
+        require(IERC20(asset).transfer(creator, quantity), "Asset transfer failed");
     }
 
     function withdraw() external onlyCreator isInited {
         require(block.timestamp > expiration, "Option not expired yet");
         require(!executed, "Option already executed");
-
-        require(IERC20(asset).transfer(creator, quantity), "Asset transfer failed");
         executed = true;
+        require(IERC20(asset).transfer(creator, quantity), "Asset transfer failed");
     }
 
     function adjustPremium(uint256 newPremium) external onlyCreator notBought notExpired {
