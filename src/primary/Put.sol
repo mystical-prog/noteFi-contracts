@@ -46,6 +46,50 @@ contract PutOption {
     // oracle to call for asset/NOTE price feed
     AggregatorV3Interface public priceOracle;
 
+
+    // Events 
+
+    // buy function event
+    event buyEvent(
+        address indexed buyer,
+        uint256 indexed premiumPaid
+    );
+
+    // execute function event
+    event executeEvent(
+        address indexed buyer,
+        uint256 indexed quantity,
+        uint256 amountPaid
+    );
+
+
+    // cancel function event
+    event cancelEvent(
+        address indexed writer,
+        uint256 indexed quantity
+    );
+
+    // withdraw function event
+    event withdrawEvent(
+        address indexed writer,
+        uint256 indexed quantity
+    );
+
+    // adjustPremium function event
+    event adjustPremiumEvent(
+        uint256 indexed oldPremium,
+        uint256 indexed newPremium
+    );
+
+    // tranfer function event, event for when buyer is being tranferred to a new buyer
+    event transferBuyerRoleEvent(
+        address indexed oldBuyer,
+        address indexed newBuyer
+    );
+
+
+
+
     /* ============ Constructor ============ */
 
     constructor(
@@ -142,6 +186,7 @@ contract PutOption {
         bought = true;
         buyer = msg.sender;
         require(premiumToken.transferFrom(msg.sender, creator, premium), "Premium transfer failed");
+        emit buyEvent(msg.sender, premium);
     }
 
     /**
@@ -150,6 +195,7 @@ contract PutOption {
      * @param newBuyer - address of the new buyer
      */
     function transfer(address newBuyer) external onlyBuyer isInited notExpired {
+        emit transferBuyerRoleEvent(buyer, newBuyer);
         buyer = newBuyer;
     }
 
@@ -164,6 +210,7 @@ contract PutOption {
         uint256 amountToTransfer = strikeValue();
         require(premiumToken.transfer(buyer, amountToTransfer), "Asset transfer failed");
         require(IERC20(asset).transferFrom(buyer, creator, quantity), "Payment failed");
+        emit executeEvent(buyer, quantity, amountToTransfer);
     }
 
     /**
@@ -186,6 +233,7 @@ contract PutOption {
     function cancel() external onlyCreator notBought isInited notExpired {
         executed = true;
         require(premiumToken.transfer(creator, strikeValue()), "Asset transfer failed");
+        emit cancelEvent(creator, strikeValue());
     }
 
     /**
@@ -198,6 +246,7 @@ contract PutOption {
         require(!executed, "Option already executed");
         executed = true;
         require(premiumToken.transfer(creator, strikeValue()), "Asset transfer failed");
+        emit withdrawEvent(creator, strikeValue());
     }
 
     /**
@@ -209,6 +258,7 @@ contract PutOption {
      * @param newPremium - new amount in NOTE
      */
     function adjustPremium(uint256 newPremium) external onlyCreator notBought notExpired {
+        emit adjustPremiumEvent(premium, newPremium);
         premium = newPremium;
     }
 
