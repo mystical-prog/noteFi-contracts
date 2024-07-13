@@ -40,6 +40,10 @@ bash updatePrice.sh
 forge test --fork-url $RPC
 ```
 
+## Contribute
+
+We're always looking for passionate developers to join our community and contribute to **noteFi**. Check out our [contributing guide](./contributing.md) for more information on how to get started.
+
 ## Roles
 These are the 3 broad types of users that will be interacting with the smart contracts.
 - Writer: The user who wants to create/write a new option contract and has sufficient funds to do so.
