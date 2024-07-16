@@ -6,7 +6,7 @@ import "../src/primary/Factory.sol";
 import "../src/primary/Call.sol";
 import "../src/primary/Put.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "../src/primary/AggregatorV3Interface.sol";
+import "../src/primary/interfaces/AggregatorV3Interface.sol";
 
 contract CallOptionTest is Test {
     OptionsFactory public factory;

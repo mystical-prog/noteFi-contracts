@@ -2,7 +2,8 @@
 pragma solidity ^0.8.0;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {AggregatorV3Interface} from "./AggregatorV3Interface.sol";
+import {AggregatorV3Interface} from "./interfaces/AggregatorV3Interface.sol";
+import {OptionInterface} from "./interfaces/OptionInterface.sol";
 
 /**
  * @title CallOption
@@ -11,7 +12,7 @@ import {AggregatorV3Interface} from "./AggregatorV3Interface.sol";
  * Contract that handles the logic and implementation of call options, this contract represents
  * a single call option
  */
-contract CallOption {
+contract CallOption is OptionInterface {
     
     /* ============ State Variables ============ */
 
@@ -43,26 +44,6 @@ contract CallOption {
 
     // oracle to call for asset/NOTE price feed
     AggregatorV3Interface public priceOracle;
-
-    /* ============ Events ============ */
-
-    // buy function event
-    event buyEvent(address indexed buyer, uint256 indexed premiumPaid);
-
-    // execute function event
-    event executeEvent(address indexed buyer, uint256 indexed quantity, uint256 amountPaid);
-
-    // cancel function event
-    event cancelEvent(address indexed writer, uint256 indexed quantity);
-
-    // withdraw function event
-    event withdrawEvent(address indexed writer, uint256 indexed quantity);
-
-    // adjustPremium function event
-    event adjustPremiumEvent(uint256 indexed oldPremium, uint256 indexed newPremium);
-
-    // tranfer function event, event for when buyer is being tranferred to a new buyer
-    event transferBuyerRoleEvent(address indexed oldBuyer, address indexed newBuyer);
 
     /* ============ Constructor ============ */
 
