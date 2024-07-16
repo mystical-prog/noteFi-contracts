@@ -47,7 +47,7 @@ contract PutOptionTest is Test {
         vm.stopPrank();
 
         assertEq(putOption.inited(), true);
-        assertEq(putOption.bought(), false);
+        assertEq(putOption.buyer() != address(0), false);
 
         deal(noteToken, buyer, 10e18);
         deal(ethToken, buyer, 1e16);
@@ -57,7 +57,7 @@ contract PutOptionTest is Test {
         putOption.buy();
 
         assertEq(noteERC20.balanceOf(buyer), 0);
-        assertEq(putOption.bought(), true);
+        assertEq(putOption.buyer() != address(0), true);
         assertEq(putOption.executed(), false);
         assertEq(putOption.buyer(), buyer);
 
@@ -111,7 +111,7 @@ contract PutOptionTest is Test {
         vm.stopPrank();
 
         assertEq(putOption.inited(), true);
-        assertEq(putOption.bought(), false);
+        assertEq(putOption.buyer() != address(0), false);
         assertEq(noteERC20.balanceOf(address(putOption)), putOption.strikeValue());
 
         deal(noteToken, buyer, 10e18);
@@ -123,7 +123,7 @@ contract PutOptionTest is Test {
         vm.stopPrank();
 
         assertEq(noteERC20.balanceOf(buyer), 0);
-        assertEq(putOption.bought(), true);
+        assertEq(putOption.buyer() != address(0), true);
         assertEq(putOption.executed(), false);
         assertEq(putOption.buyer(), buyer);
 
@@ -165,7 +165,7 @@ contract PutOptionTest is Test {
 
         assertEq(noteERC20.balanceOf(creator), 0);
         assertEq(putOption2.inited(), true);
-        assertEq(putOption2.bought(), false);
+        assertEq(putOption.buyer() != address(0), false);
 
         deal(noteToken, buyer, 10e18);
         deal(ethToken, buyer, 1e16);
@@ -175,7 +175,7 @@ contract PutOptionTest is Test {
         putOption2.buy();
 
         assertEq(noteERC20.balanceOf(buyer), 0);
-        assertEq(putOption2.bought(), true);
+        assertEq(putOption.buyer() == address(0), true);
         assertEq(putOption2.executed(), false);
         assertEq(putOption2.buyer(), buyer);
 

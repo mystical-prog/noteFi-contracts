@@ -35,8 +35,6 @@ contract PutOption {
 
     // boolean to check whether the creator/writer has transferred required assets
     bool public inited;
-    // boolean to check whether the option has been bought by anyone or not
-    bool public bought;
     // boolean to check whether the option has been executed or not
     bool public executed;
 
@@ -85,7 +83,6 @@ contract PutOption {
         quantity = _quantity;
         expiration = _expiration;
         buyer = address(0);
-        bought = false;
         executed = false;
         inited = false;
         premiumToken = IERC20(_premiumToken);
@@ -106,7 +103,7 @@ contract PutOption {
      * Throws if option has already been bought
      */
     modifier notBought() {
-        require(!bought, "Contract has been bought!");
+        require(buyer == address(0), "Contract has been bought!");
         _;
     }
 
@@ -159,7 +156,6 @@ contract PutOption {
      */
     function buy() external notBought isInited notExpired {
         require(msg.sender != creator, "Creator cannot buy their own option");
-        bought = true;
         buyer = msg.sender;
         require(premiumToken.transferFrom(msg.sender, creator, premium), "Premium transfer failed");
         emit buyEvent(msg.sender, premium);

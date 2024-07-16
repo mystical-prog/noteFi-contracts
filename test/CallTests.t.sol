@@ -46,7 +46,7 @@ contract CallOptionTest is Test {
         vm.stopPrank();
 
         assertEq(callOption.inited(), true);
-        assertEq(callOption.bought(), false);
+        assertEq(callOption.buyer() != address(0), false);
 
         deal(noteToken, buyer, 100e18);
 
@@ -54,7 +54,7 @@ contract CallOptionTest is Test {
         noteERC20.approve(address(callOption), 10e18);
         callOption.buy();
 
-        assertEq(callOption.bought(), true);
+        assertEq(callOption.buyer() != address(0), true);
         assertEq(callOption.executed(), false);
         assertEq(callOption.buyer(), buyer);
         assertEq(callOption.strikeValue(), 35e18);
@@ -107,7 +107,7 @@ contract CallOptionTest is Test {
         vm.stopPrank();
 
         assertEq(callOption.inited(), true);
-        assertEq(callOption.bought(), false);
+        assertEq(callOption.buyer() != address(0), false);
 
         deal(noteToken, buyer, 100e18);
 
@@ -116,7 +116,7 @@ contract CallOptionTest is Test {
         callOption.buy();
         vm.stopPrank();
 
-        assertEq(callOption.bought(), true);
+        assertEq(callOption.buyer() != address(0), true);
         assertEq(callOption.executed(), false);
         assertEq(callOption.buyer(), buyer);
         assertEq(callOption.strikeValue(), 35e18);
@@ -156,7 +156,7 @@ contract CallOptionTest is Test {
         vm.stopPrank();
 
         assertEq(callOption2.inited(), true);
-        assertEq(callOption2.bought(), false);
+        assertEq(callOption.buyer() != address(0), false);
 
         deal(noteToken, buyer, 100e18);
 
@@ -164,7 +164,7 @@ contract CallOptionTest is Test {
         noteERC20.approve(address(callOption2), 10e18);
         callOption2.buy();
 
-        assertEq(callOption2.bought(), true);
+        assertEq(callOption.buyer() == address(0), true);
         assertEq(callOption2.executed(), false);
         assertEq(callOption2.buyer(), buyer);
         assertEq(callOption2.strikeValue(), 38e18);
