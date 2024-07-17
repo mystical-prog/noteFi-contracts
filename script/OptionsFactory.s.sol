@@ -5,15 +5,25 @@ import "forge-std/Script.sol";
 import "forge-std/console.sol";
 import "../src/primary/Factory.sol";
 
+/**
+ * @title NewFactory Script
+ * @author PsyCode Labs
+ *
+ * This is a deploy script which is used to create a new factory contract
+ */
 contract NewFactory is Script {
     function setUp() public {}
 
     function run() public {
+        // setting up wallet
         uint256 privateKey = vm.envUint("DEV_PRIVATE_KEY");
 
         vm.startBroadcast(privateKey);
+
+        // creating a new OptionsFactory contract with address of NOTE token as parameter
         OptionsFactory factory = new OptionsFactory(0x03F734Bd9847575fDbE9bEaDDf9C166F880B5E5f);
 
+        // setting price oracles for assets
         factory.setPriceOracle(0x04a72466De69109889Db059Cb1A4460Ca0648d9D, 0x3b5dAAE6d0a1B98EF8B2E6B65206c93c8cE55841);
         factory.setPriceOracle(0xCa03230E7FB13456326a234443aAd111AC96410A, 0xc302BD52985e75C1f563a47f2b5dfC4e2b5C6C7E);
 
@@ -21,18 +31,27 @@ contract NewFactory is Script {
     }
 }
 
+/**
+ * @title SetFactoryOracles Script
+ * @author PsyCode Labs
+ *
+ * This is an interaction script which is used to set/update oracles for assets
+ */
 contract SetFactoryOracles is Script {
     OptionsFactory factory;
 
     function setUp() public {
-        factory = OptionsFactory(0x21AEd57A31E985894536481233BD7d2Df8b91ffB);
+        // initing factory from deployed address
+        factory = OptionsFactory(0xA5192B03B520aF7214930936C958CF812e361CD3);
     }
 
     function run() public {
+        // setting up wallet
         uint256 privateKey = vm.envUint("DEV_PRIVATE_KEY");
 
         vm.startBroadcast(privateKey);
 
+        // calling setPriceOracle to set/update price oracles for assets
         factory.setPriceOracle(0x04a72466De69109889Db059Cb1A4460Ca0648d9D, 0x3b5dAAE6d0a1B98EF8B2E6B65206c93c8cE55841);
         factory.setPriceOracle(0xCa03230E7FB13456326a234443aAd111AC96410A, 0xc302BD52985e75C1f563a47f2b5dfC4e2b5C6C7E);
 

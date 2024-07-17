@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {IERC20} from "@openzeppelin/contracts/interfaces/IERC20.sol";
-import "./OfferInterface.sol";
+import "../primary/interfaces/OptionInterface.sol";
 
 /**
  * @title Offer
@@ -26,7 +26,7 @@ contract Offer {
     bool public executed;
 
     // underlying option contract
-    OptionContract public optionContract;
+    OptionInterface public optionContract;
 
     // quote token (NOTE)
     IERC20 public premiumToken;
@@ -40,7 +40,7 @@ contract Offer {
     /* ============ Constructor ============ */
 
     constructor(address _optionContract, address _seller, address _premiumToken, uint256 _ask) {
-        optionContract = OptionContract(_optionContract);
+        optionContract = OptionInterface(_optionContract);
         seller = _seller;
         ask = _ask;
         premiumToken = IERC20(_premiumToken);

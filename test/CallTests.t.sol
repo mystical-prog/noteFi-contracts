@@ -156,7 +156,7 @@ contract CallOptionTest is Test {
         vm.stopPrank();
 
         assertEq(callOption2.inited(), true);
-        assertEq(callOption.buyer() != address(0), false);
+        assertEq(callOption2.buyer() == address(0), true);
 
         deal(noteToken, buyer, 100e18);
 
@@ -164,7 +164,7 @@ contract CallOptionTest is Test {
         noteERC20.approve(address(callOption2), 10e18);
         callOption2.buy();
 
-        assertEq(callOption.buyer() == address(0), true);
+        assertEq(callOption2.buyer() == address(0), false);
         assertEq(callOption2.executed(), false);
         assertEq(callOption2.buyer(), buyer);
         assertEq(callOption2.strikeValue(), 38e18);
