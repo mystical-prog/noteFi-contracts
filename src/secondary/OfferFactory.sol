@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 
 import {Offer} from "./Offer.sol";
-import "./OfferInterface.sol";
+import "../primary/interfaces/OptionInterface.sol";
 
 /**
  * @title OfferFactory
@@ -39,7 +39,7 @@ contract OfferFactory {
      * @param _ask - amount in NOTE that the seller expects to receive
      */
     function createOffer(address _optionContract, uint256 _ask) external {
-        require(OptionContract(_optionContract).buyer() == msg.sender, "The offer contract has not been authorized yet!");
+        require(OptionInterface(_optionContract).buyer() == msg.sender, "The offer contract has not been authorized yet!");
         Offer newOffer = new Offer(_optionContract, msg.sender, premiumToken, _ask);
         offers.push(address(newOffer));
         emit OfferCreated(_optionContract, _ask, msg.sender);

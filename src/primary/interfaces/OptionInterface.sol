@@ -28,4 +28,6 @@ interface OptionInterface {
 
     function adjustPremium(uint256 premium) external;
 
+    function buyer() external returns (address);
+    
 }
