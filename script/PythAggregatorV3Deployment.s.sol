@@ -4,6 +4,13 @@ pragma solidity ^0.8.0;
 import "forge-std/Script.sol";
 import {PythAggregatorV3} from "@pythnetwork/pyth-sdk-solidity/PythAggregatorV3.sol";
 
+/**
+ * @title PythAggregatorV3Deployment Script
+ * @author PsyCode Labs
+ *
+ * This is a deploy script which is used to deploy pyth oracles on Canto testnet while maintaining 
+ *  interface similar to Chainlink price feeds
+ */
 contract PythAggregatorV3Deployment is Script {
     function run() external {
         uint256 privateKey = vm.envUint("DEV_PRIVATE_KEY");
@@ -11,6 +18,7 @@ contract PythAggregatorV3Deployment is Script {
 
         address pythPriceFeedsContract = vm.envAddress("PYTH_ADDRESS");
 
+        // price feed ids from pyth docs        
         bytes32 cantoFeedId = 0x972776d57490d31c32279c16054e5c01160bd9a2e6af8b58780c82052b053549;
         bytes32 atomFeedId = 0xb00b60f88b03a6a625a8d1c048c3f66653edf217439983d037e7222c4e612819;
         bytes32 ethFeedId = 0xff61491a931112ddf1bd8147cd1b641375f79f5825126d665480874634fd0ace;
