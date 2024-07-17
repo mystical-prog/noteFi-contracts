@@ -76,7 +76,7 @@ contract PutOption is OptionInterface {
      * Throws if option has not been initialized
      */
     modifier isInited() {
-        require(inited, "Contract has not been inited by the creator!");
+        checkInit();
         _;
     }
 
@@ -84,7 +84,7 @@ contract PutOption is OptionInterface {
      * Throws if option has already been bought
      */
     modifier notBought() {
-        require(buyer == address(0), "Contract has been bought!");
+        checkBought();
         _;
     }
 
@@ -92,7 +92,7 @@ contract PutOption is OptionInterface {
      * Throws if option has already been executed
      */
     modifier notExecuted() {
-        require(!executed, "Contract has been executed!");
+        checkExecuted();
         _;
     }
 
@@ -100,7 +100,7 @@ contract PutOption is OptionInterface {
      * Throws if function is called by any address other than buyer
      */
     modifier onlyBuyer() {
-        require(msg.sender == buyer, "Only the buyer can call this function!");
+        checkBuyer(msg.sender);
         _;
     }
 
@@ -108,7 +108,7 @@ contract PutOption is OptionInterface {
      * Throws if function is called by any address other than creator
      */
     modifier onlyCreator() {
-        require(msg.sender == creator, "Only the creator can call this function!");
+        checkCreator(msg.sender);
         _;
     }
 
@@ -116,7 +116,7 @@ contract PutOption is OptionInterface {
      * Throws if the current block timestamp is greater than expiration timestamp of the option
      */
     modifier notExpired() {
-        require(block.timestamp <= expiration, "Option expired");
+        checkExpiration(block.timestamp);
         _;
     }
 
@@ -221,5 +221,31 @@ contract PutOption is OptionInterface {
      */
     function strikeValue() public view returns (uint256) {
         return (strikePrice * quantity) / (10 ** priceOracle.decimals());
+    }
+
+    /* ============ Internal Modifier Functions ============ */
+
+    function checkInit() internal view {
+        require(inited, "Contract has not been inited by the creator!");
+    }
+
+    function checkBought() internal view {
+        require(buyer == address(0), "Contract has been bought!");
+    }
+
+    function checkExecuted() internal view {
+        require(!executed, "Contract has been executed!");
+    }
+
+    function checkBuyer(address caller) internal view {
+        require(caller == buyer, "Only the buyer can call this function!");
+    }
+
+    function checkCreator(address caller) internal view {
+        require(caller == creator, "Only the creator can call this function!");
+    }
+
+    function checkExpiration(uint256 timestamp) internal view {
+        require(timestamp <= expiration, "Option expired");
     }
 }
