@@ -128,7 +128,7 @@ contract PutOption is OptionInterface {
     function init() external onlyCreator {
         require(inited == false, "Option contract has already been initialized");
         inited = true;
-        require(premiumToken.transferFrom(creator, address(this), strikeValue()), "Transfer failed");
+        require(premiumToken.transferFrom(msg.sender, address(this), strikeValue()), "Transfer failed");
     }
 
     /**

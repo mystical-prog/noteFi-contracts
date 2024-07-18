@@ -128,7 +128,7 @@ contract CallOption is OptionInterface {
     function init() external onlyCreator {
         require(inited == false, "Option contract has already been initialized");
         inited = true;
-        require(IERC20(asset).transferFrom(creator, address(this), quantity), "Transfer failed");
+        require(IERC20(asset).transferFrom(msg.sender, address(this), quantity), "Transfer failed");
     }
 
     /**

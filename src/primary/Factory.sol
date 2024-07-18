@@ -85,6 +85,11 @@ contract OptionsFactory is Ownable {
     ) external {
         address priceOracle = priceOracles[_asset];
         require(priceOracle != address(0), "Price oracle not set for this asset");
+        require(_quantity > 0, "Quantity cannot be zero");
+        require(_premium > 0, "Premium cannot be zero");
+        require(_quantity > 0, "Quantity cannot be zero");
+        require(_strikePrice > 0, "Strike price cannot be zero");
+        require(_expiration > block.timestamp, "Timestamp cannot be less than current block timestamp");
 
         CallOption _newCallOption = new CallOption(
             _asset, msg.sender, _premium, _strikePrice, _quantity, _expiration, premiumToken, priceOracle
@@ -113,6 +118,11 @@ contract OptionsFactory is Ownable {
     ) external {
         address priceOracle = priceOracles[_asset];
         require(priceOracle != address(0), "Price oracle not set for this asset");
+        require(_quantity > 0, "Quantity cannot be zero");
+        require(_premium > 0, "Premium cannot be zero");
+        require(_quantity > 0, "Quantity cannot be zero");
+        require(_strikePrice > 0, "Strike price cannot be zero");
+        require(_expiration > block.timestamp, "Timestamp cannot be less than current block timestamp");
 
         PutOption _newPutOption =
             new PutOption(_asset, msg.sender, _premium, _strikePrice, _quantity, _expiration, premiumToken, priceOracle);
