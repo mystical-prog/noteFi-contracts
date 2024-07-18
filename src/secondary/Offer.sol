@@ -41,10 +41,10 @@ contract Offer {
 
     constructor(address _optionContract, address _seller, address _premiumToken, uint256 _ask) {
         optionContract = OptionInterface(_optionContract);
+        executed = false;
         seller = _seller;
         ask = _ask;
         premiumToken = IERC20(_premiumToken);
-        executed = false;
     }
 
     /* ============ Modifiers ============ */
