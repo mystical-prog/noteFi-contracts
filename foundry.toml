@@ -5,4 +5,4 @@ libs = ["lib"]
 solc = "0.8.24"
 ignored_warnings_from = ["node_modules/@pythnetwork/pyth-sdk-solidity/"]
 ignored_error_codes = ["unused-var"]
-gas_reports = ["OptionsFactory", "CallOption", "PutOption", "OfferFactory", "Offer"]
+gas_reports = ["*"]
