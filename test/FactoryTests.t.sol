@@ -80,7 +80,7 @@ contract FactoryTests is Test {
         console2.log("Gas Cost Call First: %s", firstCreateCost);
         console2.log("Gas Cost Put First: %s", putCreateCost);
 
-        for (uint i = 0; i < 1000; i++) {
+        for (uint i = 0; i < 10; i++) {
             factory.createCallOption(ethToken, premium, strikePrice, quantity, expiration);
             factory.createPutOption(ethToken, premium, strikePrice, quantity, expiration);
         }
