@@ -105,8 +105,8 @@ contract PutOptionTest is Test {
 
         assertEq(ethERC20.balanceOf(creator), 0);
         assertEq(noteERC20.balanceOf(buyer), 0);
-        assertEq(noteERC20.balanceOf(creator), putOption.strikeValue() + 10e18);
-        assertEq(putOption.executed(), true);
+        assertEq(noteERC20.balanceOf(creator), 10e18);
+        assertEq(putOption.executed(), false);
     }
 
     function testAdjustPremium() public {
