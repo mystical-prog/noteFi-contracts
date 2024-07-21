@@ -183,7 +183,7 @@ contract CallOption is OptionInterface {
      *     initialized and there has been no buyer, which means the creator still can withdraw
      *     his asset tokens and cancel this contract
      */
-    function cancel() external onlyCreator notBought isInited notExpired {
+    function cancel() external onlyCreator notBought isInited notExpired notExecuted {
         executed = true;
         require(IERC20(asset).transfer(creator, quantity), "Asset transfer failed");
         emit cancelEvent(creator, quantity);
@@ -194,9 +194,8 @@ contract CallOption is OptionInterface {
      *     and if it was not executed by the buyer, this results in the creator receiving back his
      *     locked-in asset tokens
      */
-    function withdraw() external onlyCreator isInited {
+    function withdraw() external onlyCreator isInited notExecuted {
         require(block.timestamp > expiration, "Option not expired yet");
-        require(!executed, "Option already executed");
         executed = true;
         require(IERC20(asset).transfer(creator, quantity), "Asset transfer failed");
         emit withdrawEvent(creator, quantity);
