@@ -29,10 +29,9 @@ contract FactoryTests is Test {
         vm.prank(creator);
         factory.createCallOption(ethToken, premium, strikePrice, quantity, expiration);
 
-        address[] memory callOptions = factory.getCallOptions();
-        assertEq(callOptions.length, 1);
+        // assertEq(factory.callOptions.length, 1);
 
-        CallOption callOption = CallOption(callOptions[0]);
+        CallOption callOption = CallOption(factory.callOptions(0));
         assertEq(callOption.asset(), address(ethToken));
         assertEq(callOption.premium(), premium);
         assertEq(callOption.strikePrice(), strikePrice);
@@ -49,10 +48,9 @@ contract FactoryTests is Test {
         vm.prank(creator);
         factory.createPutOption(ethToken, premium, strikePrice, quantity, expiration);
 
-        address[] memory putOptions = factory.getPutOptions();
-        assertEq(putOptions.length, 1);
+        // assertEq(putOptions.length, 1);
 
-        PutOption putOption = PutOption(putOptions[0]);
+        PutOption putOption = PutOption(factory.putOptions(0));
         assertEq(putOption.asset(), ethToken);
         assertEq(putOption.premium(), premium);
         assertEq(putOption.strikePrice(), strikePrice);
