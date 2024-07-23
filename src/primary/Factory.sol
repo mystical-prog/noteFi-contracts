@@ -47,6 +47,12 @@ contract OptionsFactory is Ownable {
         uint256 expiration
     );
 
+    event PriceOracleUpdated(
+        address indexed asset,
+        address indexed newOracle,
+        address indexed prevOracle
+    );
+
     /* ============ Constructor ============ */
 
     constructor(address _premiumToken) Ownable(msg.sender) {
@@ -63,7 +69,9 @@ contract OptionsFactory is Ownable {
      * @param _priceOracle - address of price oracle corresponding to asset token
      */
     function setPriceOracle(address _asset, address _priceOracle) external onlyOwner {
+        address _prevOracle = priceOracles[_asset];
         priceOracles[_asset] = _priceOracle;
+        emit PriceOracleUpdated(_asset, _priceOracle, _prevOracle);
     }
 
     /**
@@ -126,16 +134,16 @@ contract OptionsFactory is Ownable {
     }
 
     /**
-     * Call Options Getter - this function returns a complete list (addresses) of call options created till date
+     * Call Option Count Getter - this function returns the total no of call options created till date
      */
-    function getCallOptions() external view returns (address[] memory) {
-        return callOptions;
+    function countCallOptions() external view returns (uint256) {
+        return callOptions.length;
     }
 
     /**
-     * Put Options Getter - this function returns a complete list (addresses) of put options created till date
+     * Put Option Count Getter - this function returns the total no of put options created till date
      */
-    function getPutOptions() external view returns (address[] memory) {
-        return putOptions;
+    function countPutOptions() external view returns (uint256) {
+        return putOptions.length;
     }
 }

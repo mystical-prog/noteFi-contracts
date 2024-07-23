@@ -222,6 +222,14 @@ contract PutOption is OptionInterface {
         return (strikePrice * quantity) / (10 ** priceOracle.decimals());
     }
 
+    /**
+     * Option Data - this a view function which is used to return the whole state/data of the option
+     *     in a single request
+     */
+    function optionData() public view returns (address, uint256, uint256, uint256, uint256, bool, bool) {
+        return (asset, strikePrice, expiration, premium, quantity, inited, executed);
+    }
+
     /* ============ Internal Modifier Functions ============ */
 
     function checkInit() internal view {
