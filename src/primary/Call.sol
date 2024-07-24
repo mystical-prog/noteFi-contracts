@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {AggregatorV3Interface} from "./interfaces/AggregatorV3Interface.sol";
 import {OptionInterface} from "./interfaces/OptionInterface.sol";
+import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 
 /**
  * @title CallOption
@@ -40,7 +41,7 @@ contract CallOption is OptionInterface {
     bool public executed;
 
     // quote token (NOTE)
-    IERC20 public premiumToken;
+    ERC20 public premiumToken;
 
     // oracle to call for asset/NOTE price feed
     AggregatorV3Interface public priceOracle;
@@ -66,7 +67,7 @@ contract CallOption is OptionInterface {
         buyer = address(0);
         executed = false;
         inited = false;
-        premiumToken = IERC20(_premiumToken);
+        premiumToken = ERC20(_premiumToken);
         priceOracle = AggregatorV3Interface(_priceOracle);
     }
 
@@ -128,7 +129,7 @@ contract CallOption is OptionInterface {
     function init() external onlyCreator {
         require(inited == false, "Option contract has already been initialized");
         inited = true;
-        require(IERC20(asset).transferFrom(msg.sender, address(this), quantity), "Transfer failed");
+        require(ERC20(asset).transferFrom(msg.sender, address(this), quantity), "Transfer failed");
     }
 
     /**
@@ -162,7 +163,7 @@ contract CallOption is OptionInterface {
         executed = true;
         uint256 amountToPay = strikeValue();
         require(premiumToken.transferFrom(buyer, creator, amountToPay), "Payment failed");
-        require(IERC20(asset).transfer(buyer, quantity), "Asset transfer failed");
+        require(ERC20(asset).transfer(buyer, quantity), "Asset transfer failed");
         emit executeEvent(buyer, quantity, amountToPay);
     }
 
@@ -185,7 +186,7 @@ contract CallOption is OptionInterface {
      */
     function cancel() external onlyCreator notBought isInited notExpired notExecuted {
         executed = true;
-        require(IERC20(asset).transfer(creator, quantity), "Asset transfer failed");
+        require(ERC20(asset).transfer(creator, quantity), "Asset transfer failed");
         emit cancelEvent(creator, quantity);
     }
 
@@ -197,7 +198,7 @@ contract CallOption is OptionInterface {
     function withdraw() external onlyCreator isInited notExecuted {
         require(block.timestamp > expiration, "Option not expired yet");
         executed = true;
-        require(IERC20(asset).transfer(creator, quantity), "Asset transfer failed");
+        require(ERC20(asset).transfer(creator, quantity), "Asset transfer failed");
         emit withdrawEvent(creator, quantity);
     }
 
@@ -219,7 +220,8 @@ contract CallOption is OptionInterface {
      *     the buyer if he/she executes the option
      */
     function strikeValue() public view returns (uint256) {
-        return (strikePrice * quantity) / (10 ** priceOracle.decimals());
+        uint256 intermediateValue = Math.mulDiv(strikePrice, quantity, 10**priceOracle.decimals());
+        return Math.mulDiv(intermediateValue, 10**premiumToken.decimals(), 10**ERC20(asset).decimals());
     }
 
     /**

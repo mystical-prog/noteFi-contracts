@@ -8,7 +8,9 @@ contract FactoryTests is Test {
     OptionsFactory public factory;
     address noteToken = 0x03F734Bd9847575fDbE9bEaDDf9C166F880B5E5f;
     address ethToken = 0xCa03230E7FB13456326a234443aAd111AC96410A;
+    address atomToken = 0x40E41DC5845619E7Ba73957449b31DFbfB9678b2;
     address priceOracle = 0xc302BD52985e75C1f563a47f2b5dfC4e2b5C6C7E;
+    address priceOracle2 = 0x31D8eFBeD8F097365D49010CA45D6c7C47A0714b;
 
     address creator = makeAddr("creator");
     address owner = makeAddr("owner");
@@ -17,26 +19,28 @@ contract FactoryTests is Test {
         vm.startPrank(owner);
         factory = new OptionsFactory(noteToken);
         factory.setPriceOracle(ethToken, priceOracle);
+        factory.setPriceOracle(atomToken, priceOracle2);
         vm.stopPrank();
     }
 
     function testCreateCallOption() public {
-        uint256 premium = 100e18;
-        uint256 strikePrice = 3500e8;
-        uint256 quantity = 1e18;
+        uint256 premium = 1e18;
+        uint256 strikePrice = 6e8;
+        uint256 quantity = 1e5;
         uint256 expiration = block.timestamp + 1 weeks;
 
         vm.prank(creator);
-        factory.createCallOption(ethToken, premium, strikePrice, quantity, expiration);
+        factory.createCallOption(atomToken, premium, strikePrice, quantity, expiration);
 
         // assertEq(factory.callOptions.length, 1);
 
         CallOption callOption = CallOption(factory.callOptions(0));
-        assertEq(callOption.asset(), address(ethToken));
+        assertEq(callOption.asset(), address(atomToken));
         assertEq(callOption.premium(), premium);
         assertEq(callOption.strikePrice(), strikePrice);
         assertEq(callOption.quantity(), quantity);
         assertEq(callOption.expiration(), expiration);
+        assertEq(callOption.strikeValue(), 6e17);
     }
 
     function testCreatePutOption() public {
