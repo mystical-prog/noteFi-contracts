@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {AggregatorV3Interface} from "./interfaces/AggregatorV3Interface.sol";
 import {OptionInterface} from "./interfaces/OptionInterface.sol";
+import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 
 /**
  * @title PutOption
@@ -40,7 +41,7 @@ contract PutOption is OptionInterface {
     bool public executed;
 
     // quote token (NOTE)
-    IERC20 public premiumToken;
+    ERC20 public premiumToken;
 
     // oracle to call for asset/NOTE price feed
     AggregatorV3Interface public priceOracle;
@@ -66,7 +67,7 @@ contract PutOption is OptionInterface {
         buyer = address(0);
         executed = false;
         inited = false;
-        premiumToken = IERC20(_premiumToken);
+        premiumToken = ERC20(_premiumToken);
         priceOracle = AggregatorV3Interface(_priceOracle);
     }
 
@@ -162,7 +163,7 @@ contract PutOption is OptionInterface {
         executed = true;
         uint256 amountToTransfer = strikeValue();
         require(premiumToken.transfer(buyer, amountToTransfer), "Asset transfer failed");
-        require(IERC20(asset).transferFrom(buyer, creator, quantity), "Payment failed");
+        require(ERC20(asset).transferFrom(buyer, creator, quantity), "Payment failed");
         emit executeEvent(buyer, quantity, amountToTransfer);
     }
 
@@ -219,7 +220,8 @@ contract PutOption is OptionInterface {
      *     the buyer if he/she executes the option
      */
     function strikeValue() public view returns (uint256) {
-        return (strikePrice * quantity) / (10 ** priceOracle.decimals());
+        uint256 intermediateValue = Math.mulDiv(strikePrice, quantity, 10**priceOracle.decimals());
+        return Math.mulDiv(intermediateValue, 10**premiumToken.decimals(), 10**ERC20(asset).decimals());
     }
 
     /**
