@@ -48,7 +48,8 @@ contract OfferFactory {
     /**
      * Offer Getter - this function returns a complete list (addresses) of offers created till date
      */
-    function getOffers() external view returns (address[] memory) {
-        return offers;
+    function getOffersCount() external view returns (uint256) {
+        return offers.length;
     }
+    
 }

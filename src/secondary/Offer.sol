@@ -73,7 +73,7 @@ contract Offer {
      *     and claim the buyer role of the underlying option, buyer will have to transfer asked
      *     amount of NOTE
      */
-    function buy() external isAuthorized isExecutable {
+    function accept() external isAuthorized isExecutable {
         require(msg.sender != seller, "The seller should call the cancel function instead");
         executed = true;
         require(premiumToken.transferFrom(msg.sender, seller, ask), "Ask transfer failed");
